@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>korpse luvs u</title>
+    <!-- Add a Favicon -->
+    <link rel="icon" href="cursor lawsquad.png" type="image/x-icon">
+
+    <style>
+        @font-face {
+            font-family: 'Sanctuary';
+            src: url('sanctuary-font.ttf') format('truetype'); /* Update the path accordingly */
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif; /* Specify the default font */
+            cursor: url(cursor.png), auto; /* Specify the path to your custom cursor image */
+        }
+
+        #entryPage {
+            background: black;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            cursor: pointer;
+        }
+
+        #background {
+            display: none;
+            /* Use a placeholder for the background image */
+            background: url('download.gif') no-repeat center center fixed;
+            background-size: cover;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        #korpseLink {
+            display: none;
+            font-family: "Sanctuary", Arial, sans-serif; /* Specify the sanctuary font */
+            font-size: 36px;
+            font-weight: bold;
+            color: red; /* Make the korpse link red */
+            text-align: center;
+            text-decoration: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(0deg); /* Set rotation to 0deg */
+            animation: blink 0.05s infinite alternate, shake 0.1s infinite, hoverAround 5s infinite linear;
+            z-index: 1;
+        }
+
+        #snowfall {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 8px; /* Slightly smaller */
+            height: 8px; /* Slightly smaller */
+            background: red; /* Make the sparkles red */
+            clip-path: polygon(0% 40%, 40% 40%, 40% 0%, 60% 0%, 60% 40%, 100% 40%, 100% 60%, 60% 60%, 60% 100%, 40% 100%, 40% 60%, 0% 60%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes blink {
+            from {
+                color: red;
+            }
+
+            to {
+                color: black;
+            }
+        }
+
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translate(-50%, -50%) rotate(0deg) translate(0, 0);
+            }
+
+            25%,
+            75% {
+                transform: translate(-50%, -50%) rotate(0deg) translate(5px, 5px);
+            }
+
+            50% {
+                transform: translate(-50%, -50%) rotate(0deg) translate(-5px, -5px);
+            }
+        }
+
+        @keyframes hoverAround {
+            0% {
+                top: 50%;
+                left: 50%;
+            }
+
+            25% {
+                top: 40%;
+                left: 60%;
+            }
+
+            50% {
+                top: 50%;
+                left: 50%;
+            }
+
+            75% {
+                top: 60%;
+                left: 40%;
+            }
+
+            100% {
+                top: 50%;
+                left: 50%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="entryPage" onclick="startExperience()">Click to enter</div>
+
+    <div id="background"></div>
+
+    <canvas id="snowfall"></canvas>
+    <audio id="backgroundMusic" loop>
+        <source src="100 acre woods.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <a id="korpseLink" href="https://www.youtube.com/channel/UCIVg_CENA-bqEMygUyI9oOA" target="_blank">korpse</a>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const entryPage = document.getElementById('entryPage');
+            const background = document.getElementById('background');
+            const backgroundMusic = document.getElementById('backgroundMusic');
+            const canvas = document.getElementById('snowfall');
+            const korpseLink = document.getElementById('korpseLink');
+            const ctx = canvas.getContext('2d');
+            const crosses = [];
+
+            function startExperience() {
+                // Hide the entry page
+                entryPage.style.display = 'none';
+
+                // Show the background
+                background.style.display = 'block';
+
+                // Show the korpse link
+                korpseLink.style.display = 'block';
+
+                // Play background music
+                backgroundMusic.play();
+
+                function resizeCanvas() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                }
+
+                window.addEventListener('resize', resizeCanvas);
+
+                function initializeCrosses() {
+                    for (let i = 0; i < 100; i++) {
+                        crosses.push({
+                            x: Math.random() * canvas.width,
+                            y: Math.random() * canvas.height,
+                            size: Math.random() * 15 + 15,
+                            speed: Math.random() * 3 + 1,
+                        });
+                    }
+                }
+
+                function draw() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    crosses.forEach(cross => {
+                        ctx.beginPath();
+
+                        // Make crosses red
+                        ctx.fillStyle = 'red';
+
+                        ctx.font = `${cross.size}px Arial`;
+                        ctx.fillText('✞', cross.x, cross.y);
+                        cross.y += cross.speed;
+
+                        if (cross.y > canvas.height) {
+                            cross.y = 0;
+                            cross.x = Math.random() * canvas.width;
+                        }
+                    });
+
+                    requestAnimationFrame(draw);
+                }
+
+                // Initialize and draw crosses on page load
+                resizeCanvas();
+                initializeCrosses();
+                draw();
+            }
+
+            // Add sparkles following the cursor
+            document.addEventListener('mousemove', function (event) {
+                const sparkle = document.createElement('div');
+                sparkle.classList.add('sparkle');
+                sparkle.style.left = event.pageX + 'px';
+                sparkle.style.top = event.pageY + 'px';
+                document.body.appendChild(sparkle);
+
+                // Remove the sparkle after a short delay
+                setTimeout(() => {
+                    sparkle.remove();
+                }, 200); // Make the sparkles disappear a little faster
+            });
+
+            entryPage.addEventListener('click', startExperience);
+        });
+    </script>
+</body>
+
+</html>
